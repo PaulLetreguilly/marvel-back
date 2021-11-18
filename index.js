@@ -187,8 +187,25 @@ app.post("/character/delete", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+app.post("/comic/delete", async (req, res) => {
+  try {
+    console.log(req.fields.id);
+    if (req.fields.id) {
+      // si l'id a bien été transmis
+      const id = req.fields.id;
+      // On recherche le "student" à modifier à partir de son id et on le supprime :
+      await Comic.findByIdAndDelete(id);
 
-// -------------------- CRUD END -------------------- //
+      // On répond au client :
+      res.json({ message: "Favorite removed" });
+    } else {
+      // si aucun id n'a été transmis :
+      res.status(400).json({ message: "Missing id" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 // -------------------- log-sign routes START -------------------- //
 
@@ -251,11 +268,11 @@ app.post("/login", async (req, res) => {
         };
         res.status(200).json(infos);
       } else {
-        res.status(400).json({ message: "unauthorized 2" });
+        res.status(401).json({ message: "unauthorized 2" });
       }
       // }
     } else {
-      res.status(400).json({ message: "unauthorized 1" });
+      res.status(401).json({ message: "unauthorized 1" });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -263,6 +280,8 @@ app.post("/login", async (req, res) => {
 });
 
 // -------------------- log-sign routes END -------------------- //
+
+// -------------------- CRUD END -------------------- //
 
 app.all("*", (req, res) => {
   res.send("Mauvaise URL");
