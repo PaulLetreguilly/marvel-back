@@ -2,7 +2,6 @@ const express = require("express");
 const formidable = require("express-formidable");
 const cors = require("cors");
 const axios = require("axios");
-// const { query } = require("express");
 const mongoose = require("mongoose");
 const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
@@ -12,6 +11,7 @@ require("dotenv").config();
 const app = express();
 
 const Character = require("./models/Character");
+const Comic = require("./models/Comic");
 const User = require("./models/User");
 const isAuthenticated = require("./middleware/middleware");
 
@@ -26,8 +26,6 @@ app.get("/", (req, res) => {
 app.get("/characters", async (req, res) => {
   try {
     //req.originUrl
-    // console.log(req.query.name);
-    // console.log(req.originalUrl);
     let params = { apiKey: "bNK7btJOXDqp7a9P" };
     if (req.query.name) {
       params.name = req.query.name;
@@ -103,7 +101,9 @@ app.get("/comics/:id", async (req, res) => {
 
 // -------------------- CRUD START -------------------- //
 
-app.post("/favorite/create", isAuthenticated, async (req, res) => {
+// **Create**
+
+app.post("/favorite/character", isAuthenticated, async (req, res) => {
   try {
     // console.log(req.fields.favorite);
     // console.log(req.headers.authorization);
@@ -120,17 +120,71 @@ app.post("/favorite/create", isAuthenticated, async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-app.get("/favorite", isAuthenticated, async (req, res) => {
+app.post("/favorite/comic", isAuthenticated, async (req, res) => {
   try {
-    // console.log(req.headers.authorization);
+    console.log(req.fields.favorite);
+    console.log(req.headers.authorization);
+    const ownerToken = req.headers.authorization.replace("Bearer ", "");
+    // console.log(ownerToken);
+    const comic = new Comic({
+      ownerToken: ownerToken,
+      favorite: req.fields.favorite,
+    });
+    await comic.save();
+    // console.log(character);
+    res.json({ message: "favorite registered" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// **Read**
+
+app.get("/favorite/character", isAuthenticated, async (req, res) => {
+  try {
+    console.log(req.headers.authorization);
     const filter = {
       ownerToken: req.headers.authorization.replace("Bearer ", ""),
     };
     const favorites = await Character.find(filter);
-    // console.log(favorites);
+    console.log(favorites);
     res.status(200).json(favorites);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+app.get("/favorite/comic", isAuthenticated, async (req, res) => {
+  try {
+    console.log(req.headers.authorization);
+    const filter = {
+      ownerToken: req.headers.authorization.replace("Bearer ", ""),
+    };
+    const favorites = await Comic.find(filter);
+    console.log(favorites);
+    res.status(200).json(favorites);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// **Delete**
+app.post("/character/delete", async (req, res) => {
+  try {
+    console.log(req.fields.id);
+    if (req.fields.id) {
+      // si l'id a bien été transmis
+      const id = req.fields.id;
+      // On recherche le "student" à modifier à partir de son id et on le supprime :
+      await Character.findByIdAndDelete(id);
+
+      // On répond au client :
+      res.json({ message: "Favorite removed" });
+    } else {
+      // si aucun id n'a été transmis :
+      res.status(400).json({ message: "Missing id" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
