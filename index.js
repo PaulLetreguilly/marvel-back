@@ -287,6 +287,6 @@ app.all("*", (req, res) => {
   res.send("Mauvaise URL");
 });
 
-app.listen(4000, () => {
+app.listen(4000 || process.env.PORT, () => {
   console.log("Server has started");
 });
