@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 app.get("/characters", async (req, res) => {
   try {
     //req.originUrl
-    let params = { apiKey: "bNK7btJOXDqp7a9P" };
+    let params = { apiKey: process.env.API_KEY };
     if (req.query.name) {
       params.name = req.query.name;
     }
@@ -58,7 +58,7 @@ app.get("/characters", async (req, res) => {
 
 app.get("/comics", async (req, res) => {
   try {
-    let params = { apiKey: "bNK7btJOXDqp7a9P" };
+    let params = { apiKey: process.env.API_KEY };
     if (req.query.title) {
       params.title = req.query.title;
     }
@@ -90,7 +90,7 @@ app.get("/comics/:id", async (req, res) => {
     // console.log(req.params.id);
     // console.log('')
     const response = await axios.get(
-      `https://lereacteur-marvel-api.herokuapp.com/comics/${req.params.id}/?apiKey=bNK7btJOXDqp7a9P`
+      `https://lereacteur-marvel-api.herokuapp.com/comics/${req.params.id}/?apiKey=${process.env.API_KEY}`
     );
     // console.log(response.data.id);
     res.status(200).json(response.data);
