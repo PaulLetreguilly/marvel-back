@@ -8,6 +8,7 @@ const Character = mongoose.model("Character", {
     comics: Array,
     thumbnail: { path: String, extension: String },
     id: String,
+    liked: Boolean,
   },
 });
 
