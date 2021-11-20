@@ -111,7 +111,7 @@ app.post("/favorite/character", isAuthenticated, async (req, res) => {
     // console.log(ownerToken);
     const character = new Character({
       ownerToken: ownerToken,
-      favorite: req.fields.favorite,
+      favorite: req.fields,
     });
     await character.save();
     // console.log(character);
@@ -168,35 +168,37 @@ app.get("/favorite/comic", isAuthenticated, async (req, res) => {
 });
 
 // **Update**
-app.post("/update/character", async (req, res) => {
-  try {
-    if (req.fields.id && req.fields.liked) {
-      const character = await Character.findById(req.fields.id);
-      character.liked = true;
-      await character.save();
-      res.status(200).json(character);
-    } else {
-      res.status(400).json({ message: "Missing parameter" });
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
 
-app.post("/update/comic", async (req, res) => {
-  try {
-    if (req.fields.id && req.fields.liked) {
-      const comic = await Comic.findById(req.fields.id);
-      comic.liked = true;
-      await comic.save();
-      res.status(200).json(comic);
-    } else {
-      res.status(400).json({ message: "Missing parameter" });
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+// app.post("/update/character", async (req, res) => {
+//   try {
+//     if (req.fields.id && req.fields.liked) {
+//       const character = await Character.findById(req.fields.id);
+//       character.liked = true;
+//       await character.save();
+//       res.status(200).json(character);
+//     } else {
+//       res.status(400).json({ message: "Missing parameter" });
+//     }
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// });
+
+// app.post("/update/comic", async (req, res) => {
+//   try {
+//     if (req.fields.id && req.fields.liked) {
+//       const comic = await Comic.findById(req.fields.id);
+//       comic.liked = true;
+//       await comic.save();
+//       res.status(200).json(comic);
+//     } else {
+//       res.status(400).json({ message: "Missing parameter" });
+//     }
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// });
+
 // **Delete**
 app.post("/character/delete", async (req, res) => {
   try {
