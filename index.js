@@ -105,13 +105,10 @@ app.get("/comics/:id", async (req, res) => {
 
 app.post("/favorite/character", isAuthenticated, async (req, res) => {
   try {
-    // console.log(req.fields.favorite);
-    // console.log(req.headers.authorization);
     const ownerToken = req.headers.authorization.replace("Bearer ", "");
-    // console.log(ownerToken);
     const character = new Character({
       ownerToken: ownerToken,
-      favorite: req.fields,
+      favorite: req.fields.item,
     });
     await character.save();
     // console.log(character);
@@ -122,13 +119,13 @@ app.post("/favorite/character", isAuthenticated, async (req, res) => {
 });
 app.post("/favorite/comic", isAuthenticated, async (req, res) => {
   try {
-    console.log(req.fields.favorite);
-    console.log(req.headers.authorization);
+    // console.log(req.fields.favorite);
+    // console.log(req.headers.authorization);
     const ownerToken = req.headers.authorization.replace("Bearer ", "");
     // console.log(ownerToken);
     const comic = new Comic({
       ownerToken: ownerToken,
-      favorite: req.fields.favorite,
+      favorite: req.fields.item,
     });
     await comic.save();
     // console.log(character);
@@ -142,12 +139,12 @@ app.post("/favorite/comic", isAuthenticated, async (req, res) => {
 
 app.get("/favorite/character", isAuthenticated, async (req, res) => {
   try {
-    console.log(req.headers.authorization);
+    // console.log(req.headers.authorization);
     const filter = {
       ownerToken: req.headers.authorization.replace("Bearer ", ""),
     };
     const favorites = await Character.find(filter);
-    console.log(favorites);
+    // console.log(favorites);
     res.status(200).json(favorites);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -155,12 +152,12 @@ app.get("/favorite/character", isAuthenticated, async (req, res) => {
 });
 app.get("/favorite/comic", isAuthenticated, async (req, res) => {
   try {
-    console.log(req.headers.authorization);
+    // console.log(req.headers.authorization);
     const filter = {
       ownerToken: req.headers.authorization.replace("Bearer ", ""),
     };
     const favorites = await Comic.find(filter);
-    console.log(favorites);
+    // console.log(favorites);
     res.status(200).json(favorites);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -202,7 +199,7 @@ app.get("/favorite/comic", isAuthenticated, async (req, res) => {
 // **Delete**
 app.post("/character/delete", async (req, res) => {
   try {
-    console.log(req.fields.id);
+    // console.log(req.fields.id);
     if (req.fields.id) {
       // si l'id a bien été transmis
       const id = req.fields.id;
@@ -221,7 +218,7 @@ app.post("/character/delete", async (req, res) => {
 });
 app.post("/comic/delete", async (req, res) => {
   try {
-    console.log(req.fields.id);
+    // console.log(req.fields.id);
     if (req.fields.id) {
       // si l'id a bien été transmis
       const id = req.fields.id;
@@ -275,7 +272,7 @@ app.post("/signup", async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     res.status(400).json({ message: error.message });
   }
 });
